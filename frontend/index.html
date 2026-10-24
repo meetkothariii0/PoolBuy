@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PoolBuy | Group buying on-chain</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <a class="brand" href="/"><span class="brand-mark">P</span><span>PoolBuy</span></a>
+        <div class="network">
+          <span class="status-dot"></span>
+          <span id="network-label">Local Hardhat</span>
+          <button id="connect-button" class="button button-primary">Connect wallet</button>
+        </div>
+      </header>
+
+      <section class="hero">
+        <div>
+          <p class="eyebrow">Collective buying, settled on-chain</p>
+          <h1>Better prices when<br /><em>we buy together.</em></h1>
+          <p class="hero-copy">Create a deal, pool orders with your community, and automatically unlock volume discounts through a transparent escrow.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#create">Create a deal <span>→</span></a>
+            <a class="button button-quiet" href="#deals">Browse deals</a>
+          </div>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <div class="orb orb-one"></div><div class="orb orb-two"></div>
+          <div class="floating-card card-top"><span>Volume unlocked</span><strong>−30%</strong></div>
+          <div class="floating-card card-bottom"><span>Community orders</span><strong>128 units</strong></div>
+        </div>
+      </section>
+
+      <section class="stats">
+        <div><strong id="deal-count">0</strong><span>Deals created</span></div>
+        <div><strong id="active-count">0</strong><span>Active deals</span></div>
+        <div><strong id="completed-count">0</strong><span>Fulfilled deals</span></div>
+        <div><strong>3</strong><span>Price tiers</span></div>
+        <div><strong>100%</strong><span>On-chain escrow</span></div>
+      </section>
+
+      <section id="create" class="panel create-panel">
+        <div class="section-heading"><div><p class="eyebrow">Start a new pool</p><h2>Create your deal</h2></div><span class="step">01 / 02</span></div>
+        <form id="create-form">
+          <div class="form-grid">
+            <label>Deal title<input id="title" required placeholder="e.g. Community coffee order" /></label>
+            <label>Supplier wallet<input id="supplier" required placeholder="0x..." pattern="^0x[a-fA-F0-9]{40}$" /></label>
+            <label>Order window <select id="order-minutes"><option value="1" selected>1 minute (demo)</option><option value="5">5 minutes</option><option value="60">1 hour</option><option value="1440">24 hours</option><option value="4320">3 days</option></select></label>
+            <label>Delivery window <select id="delivery-days"><option value="1">1 day</option><option value="3" selected>3 days</option><option value="7">7 days</option></select></label>
+          </div>
+          <div class="tier-heading"><h3>Discount tiers</h3><span>Buyers pay tier 1 upfront and receive rebates after settlement.</span></div>
+          <div class="tier-grid">
+            <label>Minimum units<input id="tier0-min" type="number" min="1" value="10" required /></label>
+            <label>Price / unit (ETH)<input id="tier0-price" type="number" min="0" step="0.0001" value="0.1" required /></label>
+            <label>Tier 2 minimum<input id="tier1-min" type="number" min="1" value="50" required /></label>
+            <label>Tier 2 price (ETH)<input id="tier1-price" type="number" min="0" step="0.0001" value="0.08" required /></label>
+            <label>Tier 3 minimum<input id="tier2-min" type="number" min="1" value="100" required /></label>
+            <label>Tier 3 price (ETH)<input id="tier2-price" type="number" min="0" step="0.0001" value="0.07" required /></label>
+          </div>
+          <button class="button button-primary" type="submit">Create deal <span>→</span></button>
+        </form>
+      </section>
+
+      <section class="demo-panel">
+        <div class="section-heading"><div><p class="eyebrow">Presentation mode</p><h2>Show the full lifecycle</h2></div><span class="badge">Demo guide</span></div>
+        <p class="demo-intro">Create a deal with the <strong>1 minute (demo)</strong> order window, then use the wallet roles below. The dashboard updates the status after every confirmed transaction.</p>
+        <div class="demo-steps">
+          <div><strong>1</strong><span><b>Open</b><br />Organizer creates the deal.</span></div>
+          <div><strong>2</strong><span><b>Locked</b><br />Buyer joins, then organizer finalizes after the minute passes.</span></div>
+          <div><strong>3</strong><span><b>Delivered</b><br />Supplier switches wallet and marks delivery.</span></div>
+          <div><strong>4</strong><span><b>Completed</b><br />Buyer confirms, then click Settle.</span></div>
+        </div>
+        <div class="demo-failure"><span class="badge failed">Failed path</span><span>To demonstrate failure, create a deal with minimum units of 10, join only 1 unit, wait one minute, and finalize. It appears under <b>History</b> as Failed and the buyer can withdraw a refund.</span></div>
+      </section>
+
+      <section id="deals" class="deals-section">
+        <div class="section-heading"><div><p class="eyebrow">Live on-chain</p><h2>Deal dashboard</h2></div><button id="refresh-button" class="button button-quiet">Refresh ↻</button></div>
+        <div id="wallet-role" class="wallet-role">Connect a wallet to place an order or manage a deal.</div>
+        <div class="deal-tabs" role="tablist">
+          <button class="tab active" data-filter="all">All <span id="all-tab-count">0</span></button>
+          <button class="tab" data-filter="active">Active <span id="active-tab-count">0</span></button>
+          <button class="tab" data-filter="completed">Fulfilled <span id="completed-tab-count">0</span></button>
+          <button class="tab" data-filter="history">History <span id="history-tab-count">0</span></button>
+        </div>
+        <div id="deal-list" class="deal-list"><div class="empty">Connect your wallet to load deals from the local chain.</div></div>
+      </section>
+
+      <footer><span>PoolBuy / Local network</span><span id="contract-label"></span></footer>
+    </main>
+    <div id="toast" class="toast"></div>
+    <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
